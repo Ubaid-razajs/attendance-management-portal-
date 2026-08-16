@@ -1,1 +1,2 @@
-export default function Badge({ children }) { return <span>{children}</span>; }
+const styles = { present: 'bg-emerald-50 text-emerald-700', absent: 'bg-rose-50 text-rose-700', late: 'bg-amber-50 text-amber-700', pending: 'bg-slate-100 text-slate-600', approved: 'bg-blue-50 text-blue-700' }
+export default function Badge({ children, status = 'pending' }) { return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${styles[status] || styles.pending}`}>{children}</span> }
