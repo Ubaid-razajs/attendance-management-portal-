@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { LockKeyhole, Mail, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -13,10 +13,9 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  if (isAuthenticated) {
-    navigate('/admin/dashboard', { replace: true })
-    return null
-  }
+  useEffect(() => {
+    if (isAuthenticated) navigate('/admin/dashboard', { replace: true })
+  }, [isAuthenticated, navigate])
 
   const submit = (event) => {
     event.preventDefault()
