@@ -1,0 +1,3 @@
+import { QrCode } from 'lucide-react'
+// Kiosk shell is optimized for a shared school attendance scanning station.
+export default function KioskShell({children}){return <div className="min-h-screen bg-slate-950 text-white"><header className="flex h-20 items-center justify-between border-b border-white/10 px-6"><div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-500"><QrCode size={20}/></div><div><b>Attendly Kiosk</b><p className="text-xs text-slate-400">Student attendance scanner</p></div></div><span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-400">Station ready</span></header><main>{children}</main></div>}
