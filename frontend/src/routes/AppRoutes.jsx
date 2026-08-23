@@ -1,8 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import AdminLayout from '../components/layout/AdminLayout'
 import TeacherLayout from '../components/layout/TeacherLayout'
-import ParentLayout from '../components/layout/ParentLayout'
-import KioskLayout from '../components/layout/KioskLayout'
+import ParentShell from '../components/common/ParentShell'
+import KioskShell from '../components/common/KioskShell'
 import ProtectedRoute from './ProtectedRoute'
 import RoleRoute from './RoleRoute'
 import { ROLES } from '../constants/roles'
@@ -23,9 +23,9 @@ import ForgotPassword from '../pages/auth/ForgotPassword'
 import PortalModule from '../components/common/PortalModule'
 import Scanner from '../pages/kiosk/Scanner'
 
-// Route definitions are data-driven so every role stays easy to audit and extend.
+// Route tables make the 22-page portal auditable and prevent duplicated guard logic.
 const adminPages=[['/admin/dashboard',Dashboard],['/admin/students',Students],['/admin/students/add',AddStudent],['/admin/students/:id',StudentProfile],['/admin/students/:id/card',StudentIDCard],['/admin/teachers',Teachers],['/admin/classes',Classes],['/admin/attendance',Attendance],['/admin/leaves',LeaveRequests],['/admin/reports',Reports],['/admin/notifications',Notifications],['/admin/settings',Settings]]
 const teacherPages=[['/teacher/dashboard','teacherDashboard'],['/teacher/class','class'],['/teacher/attendance','monitoring'],['/teacher/history','history'],['/teacher/leaves','teacherLeaves']]
 const parentPages=[['/parent/dashboard','parentDashboard'],['/parent/attendance','parentAttendance'],['/parent/apply-leave','applyLeave'],['/parent/leave-history','leaveHistory']]
 function Guard({role,children}){return <ProtectedRoute><RoleRoute allowedRoles={[role]}>{children}</RoleRoute></ProtectedRoute>}
-export default function AppRoutes(){return <Routes><Route path="/" element={<Navigate to="/admin/dashboard" replace/>}/><Route path="/login" element={<Login/>}/><Route path="/forgot-password" element={<ForgotPassword/>}/>{adminPages.map(([path,Component])=><Route key={path} path={path} element={<Guard role={ROLES.ADMIN}><AdminLayout><Component/></AdminLayout></Guard>}/>)}{teacherPages.map(([path,type])=><Route key={path} path={path} element={<Guard role={ROLES.TEACHER}><TeacherLayout><PortalModule type={type}/></TeacherLayout></Guard>}/>)}{parentPages.map(([path,type])=><Route key={path} path={path} element={<Guard role={ROLES.PARENT}><ParentLayout><PortalModule type={type}/></ParentLayout></Guard>}/>)}<Route path="/kiosk/scanner" element={<KioskLayout><Scanner/></KioskLayout>}/><Route path="*" element={<Navigate to="/admin/dashboard" replace/>}/></Routes>}
+export default function AppRoutes(){return <Routes><Route path="/" element={<Navigate to="/admin/dashboard" replace/>}/><Route path="/login" element={<Login/>}/><Route path="/forgot-password" element={<ForgotPassword/>}/>{adminPages.map(([path,Component])=><Route key={path} path={path} element={<Guard role={ROLES.ADMIN}><AdminLayout><Component/></AdminLayout></Guard>}/>)}{teacherPages.map(([path,type])=><Route key={path} path={path} element={<Guard role={ROLES.TEACHER}><TeacherLayout><PortalModule type={type}/></TeacherLayout></Guard>}/>)}{parentPages.map(([path,type])=><Route key={path} path={path} element={<Guard role={ROLES.PARENT}><ParentShell><PortalModule type={type}/></ParentShell></Guard>}/>)}<Route path="/kiosk/scanner" element={<KioskShell><Scanner/></KioskShell>}/><Route path="*" element={<Navigate to="/admin/dashboard" replace/>}/></Routes>}
