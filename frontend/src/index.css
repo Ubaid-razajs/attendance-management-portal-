@@ -9,5 +9,17 @@
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; min-height: 100vh; background: #f8fafc; }
 button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+::selection { background: rgb(99 102 241 / .18); }
+
+/* Shared form controls keep all 22 screens visually consistent. */
+.control { width: 100%; border: 1px solid #e2e8f0; border-radius: .75rem; background: #fff; padding: .7rem .9rem; font-size: .875rem; outline: none; transition: border-color .2s, box-shadow .2s; }
+.control:focus { border-color: #6366f1; box-shadow: 0 0 0 4px rgb(99 102 241 / .1); }
+
+/* Lightweight scrollbar polish for wide tables and portal navigation. */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
