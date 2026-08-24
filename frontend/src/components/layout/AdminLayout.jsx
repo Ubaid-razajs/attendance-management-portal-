@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { LayoutDashboard, Users, UserRound, GraduationCap, ClipboardCheck, CalendarDays, FileBarChart3, Bell, Settings, Menu, X, LogOut, Search } from 'lucide-react'
+import { LayoutDashboard, Users, UserRound, GraduationCap, ClipboardCheck, CalendarDays, FileText, Bell, Settings, Menu, X, LogOut, Search } from 'lucide-react'
 import useAuth from '../../hooks/useAuth'
 
 const items = [
   ['Dashboard', '/admin/dashboard', LayoutDashboard], ['Students', '/admin/students', Users], ['Teachers', '/admin/teachers', UserRound],
   ['Classes', '/admin/classes', GraduationCap], ['Attendance', '/admin/attendance', ClipboardCheck], ['Leave Requests', '/admin/leaves', CalendarDays],
-  ['Reports', '/admin/reports', FileBarChart3], ['Notifications', '/admin/notifications', Bell], ['Settings', '/admin/settings', Settings],
+  ['Reports', '/admin/reports', FileText], ['Notifications', '/admin/notifications', Bell], ['Settings', '/admin/settings', Settings],
 ]
 
 export default function AdminLayout({ children }) {
