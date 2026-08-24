@@ -1,10 +1,6 @@
 import AppRoutes from './routes/AppRoutes'
-import { AuthProvider } from './context/AuthContext'
 
+// Authentication is mounted once in main.jsx; keeping App focused on routing avoids nested providers.
 export default function App() {
-  return (
-    <AuthProvider>
-      <AppRoutes />
-    </AuthProvider>
-  )
+  return <AppRoutes />
 }
