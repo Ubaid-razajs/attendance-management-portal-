@@ -1,11 +1,11 @@
 # Attendance Management Portal — Frontend
 
-React/Vite frontend for a role-based school attendance management system.
+A responsive React/Vite frontend for a school attendance management system with separate Admin, Teacher, Parent and Kiosk experiences.
 
 ## Stack
 
 - React + Vite
-- Tailwind CSS
+- Tailwind CSS v4 via `@tailwindcss/vite`
 - React Router DOM
 - Framer Motion
 - Lucide React
@@ -13,48 +13,47 @@ React/Vite frontend for a role-based school attendance management system.
 - Axios
 - date-fns
 
-## Architecture
+## Portal screens
 
-```text
-src/
-├── components/     # Reusable UI and role layouts
-├── pages/          # Route-level screens
-├── routes/         # Authentication and role guards
-├── context/        # Global application state
-├── hooks/          # Reusable React hooks
-├── services/       # API integration layer
-├── utils/          # Formatting and helpers
-└── constants/      # Shared enums and configuration
-```
+### Admin
+Dashboard, Students, Add Student, Student Profile, Student ID Card, Teachers, Classes, Attendance, Leave Requests, Reports, Notifications and Settings.
 
-## Admin modules currently implemented
+### Teacher
+Dashboard, My Class, Attendance Monitoring, Attendance History and Leave Requests.
 
-- Dashboard
-- Students
-- Add Student
-- Student Profile
-- Student ID Card
-- Teachers
-- Classes
-- Attendance
-- Leave Requests
-- Reports
-- Notifications
-- Settings
-- Login / Forgot Password
+### Parent
+Dashboard, Attendance, Apply Leave and Leave History.
 
-## Authentication
+### Kiosk
+Scanner / attendance check-in screen.
 
-The frontend currently uses a lightweight local session through `AuthContext` so the UI can be developed independently of the backend. Replace the `login` implementation with the real API authentication service when the backend is connected.
+## Frontend behavior
 
-Protected routes require an authenticated session, and `RoleRoute` enforces the user's role.
+The UI is currently backend-independent. `AuthContext` provides a local demo session so all role-based screens can be tested before API integration. Forms, filters, attendance status controls, leave actions, notifications and dashboard interactions use local state and can later be wired to the service layer.
 
-## Development
+## Run locally
+
+From the `frontend` directory:
 
 ```bash
 npm install
 npm run dev
 ```
+
+Then open the Vite URL shown in the terminal (normally `http://localhost:5173`).
+
+### If an old Vite dependency error appears
+
+After pulling the latest GitHub code, clear the old dependency cache and reinstall. On Windows Command Prompt:
+
+```bat
+rmdir /s /q node_modules
+if exist package-lock.json del package-lock.json
+npm install
+npm run dev
+```
+
+This is especially important after changing icon exports or major dependency versions because Vite caches optimized modules in `node_modules/.vite`.
 
 ## Quality checks
 
@@ -63,6 +62,20 @@ npm run lint
 npm run build
 ```
 
-## Environment
+## Architecture
 
-Backend/API configuration belongs in `.env` and should be accessed through Vite's `import.meta.env` variables. Never commit secrets.
+```text
+src/
+├── components/     # reusable UI, common modules and role layouts
+├── pages/          # route-level screens
+├── routes/         # routing and access guards
+├── context/        # global session/school state
+├── hooks/          # reusable React hooks
+├── services/       # backend/API integration layer
+├── utils/          # formatting and permissions helpers
+└── constants/      # roles and attendance enums
+```
+
+## API integration
+
+When the backend is ready, replace the demo `AuthContext` login with `authService` and connect the existing student, teacher, attendance, leave and notification services. Keep secrets out of source control and use Vite `import.meta.env` variables for public configuration.
