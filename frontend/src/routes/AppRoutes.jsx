@@ -20,10 +20,10 @@ import Notifications from '../pages/admin/Notifications'
 import Settings from '../pages/admin/Settings'
 import Login from '../pages/auth/Login'
 import ForgotPassword from '../pages/auth/ForgotPassword'
+import ResetPassword from '../pages/auth/ResetPassword'
 import PortalModule from '../components/common/PortalModule'
 import Scanner from '../pages/kiosk/Scanner'
 
-// Keep all protected routes behind the same authentication + role guards.
 const adminPages = [
   ['/admin/dashboard', Dashboard], ['/admin/students', Students], ['/admin/students/add', AddStudent],
   ['/admin/students/:id', StudentProfile], ['/admin/students/:id/card', StudentIDCard], ['/admin/teachers', Teachers],
@@ -33,20 +33,18 @@ const adminPages = [
 const teacherPages = [['/teacher/dashboard', 'teacherDashboard'], ['/teacher/class', 'class'], ['/teacher/attendance', 'monitoring'], ['/teacher/history', 'history'], ['/teacher/leaves', 'teacherLeaves']]
 const parentPages = [['/parent/dashboard', 'parentDashboard'], ['/parent/attendance', 'parentAttendance'], ['/parent/apply-leave', 'applyLeave'], ['/parent/leave-history', 'leaveHistory']]
 
-function Guard({ role, children }) {
-  return <ProtectedRoute><RoleRoute allowedRoles={[role]}>{children}</RoleRoute></ProtectedRoute>
-}
+function Guard({ role, children }) { return <ProtectedRoute><RoleRoute allowedRoles={[role]}>{children}</RoleRoute></ProtectedRoute> }
 
 export default function AppRoutes() {
   return <Routes>
-    {/* The public entry point is always visible, even on a fresh browser session. */}
     <Route path="/" element={<Navigate to="/login" replace />} />
     <Route path="/login" element={<Login />} />
     <Route path="/forgot-password" element={<ForgotPassword />} />
+    <Route path="/reset-password" element={<ResetPassword />} />
     {adminPages.map(([path, Component]) => <Route key={path} path={path} element={<Guard role={ROLES.ADMIN}><AdminLayout><Component /></AdminLayout></Guard>} />)}
     {teacherPages.map(([path, type]) => <Route key={path} path={path} element={<Guard role={ROLES.TEACHER}><TeacherLayout><PortalModule type={type} /></TeacherLayout></Guard>} />)}
     {parentPages.map(([path, type]) => <Route key={path} path={path} element={<Guard role={ROLES.PARENT}><ParentShell><PortalModule type={type} /></ParentShell></Guard>} />)}
-    <Route path="/kiosk/scanner" element={<KioskShell><Scanner /></KioskShell>} />
+    <Route path="/kiosk/scanner" element={<ProtectedRoute><KioskShell><Scanner /></KioskShell></ProtectedRoute>} />
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>
 }
