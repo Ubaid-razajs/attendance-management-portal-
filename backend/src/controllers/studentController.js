@@ -1,6 +1,7 @@
 import Student from '../models/Student.js'
 import Teacher from '../models/Teacher.js'
 import Class from '../models/Class.js'
+import User from '../models/User.js'
 import { asyncHandler, httpError } from '../utils/asyncHandler.js'
 
 const populate = { path: 'class', select: 'name section grade room teacher', populate: { path: 'teacher', select: 'name employeeId' } }
@@ -16,13 +17,8 @@ export const listStudents = asyncHandler(async (req, res) => {
   } else if (classId) filter.class = classId
   if (active !== undefined) filter.isActive = active !== 'false'
   if (search) filter.$or = [{ name: new RegExp(search, 'i') }, { studentId: new RegExp(search, 'i') }, { fatherName: new RegExp(search, 'i') }]
-  const safeLimit = Math.min(Math.max(Number(limit) || 20, 1), 100)
-  const safePage = Math.max(Number(page) || 1, 1)
-  const skip = (safePage - 1) * safeLimit
-  const [items, total] = await Promise.all([
-    Student.find(filter).populate(populate).populate('parent', 'name email phone').sort({ createdAt: -1 }).skip(skip).limit(safeLimit),
-    Student.countDocuments(filter)
-  ])
+  const safeLimit = Math.min(Math.max(Number(limit) || 20, 1), 100); const safePage = Math.max(Number(page) || 1, 1); const skip = (safePage - 1) * safeLimit
+  const [items, total] = await Promise.all([Student.find(filter).populate(populate).populate('parent', 'name email phone').sort({ createdAt: -1 }).skip(skip).limit(safeLimit), Student.countDocuments(filter)])
   res.json({ success: true, data: items, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } })
 })
 
@@ -41,7 +37,13 @@ export const getStudent = asyncHandler(async (req, res) => {
 })
 
 export const createStudent = asyncHandler(async (req, res) => {
-  const student = await Student.create(req.body)
+  const { parentEmail, parentName, parentPhone, ...studentPayload } = req.body
+  if (parentEmail) {
+    let parent = await User.findOne({ email: parentEmail.toLowerCase(), role: 'parent' })
+    if (!parent) parent = await User.create({ name: parentName || 'Parent', email: parentEmail, phone: parentPhone || '', role: 'parent', password: 'Parent@12345' })
+    studentPayload.parent = parent._id
+  }
+  const student = await Student.create(studentPayload)
   const data = await Student.findById(student._id).populate(populate).populate('parent', 'name email phone')
   res.status(201).json({ success: true, data })
 })
