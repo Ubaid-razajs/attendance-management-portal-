@@ -3,10 +3,17 @@ import Attendance from '../models/Attendance.js'
 import Notification from '../models/Notification.js'
 import { asyncHandler, httpError } from '../utils/asyncHandler.js'
 
+function normalizeStudentCode(value) {
+  const raw = String(value || '').trim()
+  return raw.replace(/^ATTENDANCE_STUDENT:/i, '').trim()
+}
+
 export const scan = asyncHandler(async (req, res) => {
-  const { studentId, status = 'present' } = req.body
-  if (!studentId) throw httpError('studentId is required', 422)
-  const student = await Student.findOne({ studentId, isActive: true }).populate('class', 'name section')
+  const { studentId, qrValue, status = 'present' } = req.body
+  const code = normalizeStudentCode(qrValue || studentId)
+  if (!code) throw httpError('studentId or qrValue is required', 422)
+  if (!['present', 'late', 'absent', 'excused'].includes(status)) throw httpError('Invalid attendance status', 422)
+  const student = await Student.findOne({ studentId: code, isActive: true }).populate('class', 'name section')
   if (!student) throw httpError('Student card was not recognized', 404)
   if (!student.class) throw httpError('Student has no assigned class', 422)
   const now = new Date(); const day = new Date(now); day.setHours(0, 0, 0, 0)
