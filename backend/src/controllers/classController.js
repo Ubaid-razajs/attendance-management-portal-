@@ -1,16 +1,21 @@
 import Class from '../models/Class.js'
 import Student from '../models/Student.js'
+import Teacher from '../models/Teacher.js'
 import { asyncHandler, httpError } from '../utils/asyncHandler.js'
 
-export const listClasses = asyncHandler(async (_req, res) => {
-  const data = await Class.find().populate('teacher', 'name employeeId subject').sort({ name: 1, section: 1 })
+export const listClasses = asyncHandler(async (req, res) => {
+  const filter = {}
+  if (req.user.role === 'teacher') { const teacher = await Teacher.findOne({ user: req.user._id }).select('_id'); filter.teacher = teacher?._id }
+  const data = await Class.find(filter).populate('teacher', 'name employeeId subject').sort({ name: 1, section: 1 })
   const counts = await Student.aggregate([{ $match: { isActive: true } }, { $group: { _id: '$class', count: { $sum: 1 } } }])
   const map = new Map(counts.map((item) => [String(item._id), item.count]))
   res.json({ success: true, data: data.map((item) => ({ ...item.toObject(), studentCount: map.get(String(item._id)) || 0 })) })
 })
 
 export const getClass = asyncHandler(async (req, res) => {
-  const data = await Class.findById(req.params.id).populate('teacher', 'name employeeId subject')
+  const filter = { _id: req.params.id }
+  if (req.user.role === 'teacher') { const teacher = await Teacher.findOne({ user: req.user._id }).select('_id'); filter.teacher = teacher?._id }
+  const data = await Class.findOne(filter).populate('teacher', 'name employeeId subject')
   if (!data) throw httpError('Class not found', 404)
   res.json({ success: true, data })
 })
