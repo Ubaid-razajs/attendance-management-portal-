@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Users, Trash2, RefreshCw, AlertCircle } from 'lucide-react'
+import { Plus, Users, Trash2, AlertCircle } from 'lucide-react'
 import classService from '../../services/classService'
 import teacherService from '../../services/teacherService'
 import { getApiError } from '../../services/api'
