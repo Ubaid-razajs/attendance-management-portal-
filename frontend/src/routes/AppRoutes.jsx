@@ -34,6 +34,7 @@ const teacherPages = [['/teacher/dashboard', 'teacherDashboard'], ['/teacher/cla
 const parentPages = [['/parent/dashboard', 'parentDashboard'], ['/parent/attendance', 'parentAttendance'], ['/parent/apply-leave', 'applyLeave'], ['/parent/leave-history', 'leaveHistory']]
 
 function Guard({ role, children }) { return <ProtectedRoute><RoleRoute allowedRoles={[role]}>{children}</RoleRoute></ProtectedRoute> }
+function KioskGuard({ children }) { return <ProtectedRoute><RoleRoute allowedRoles={[ROLES.ADMIN, ROLES.TEACHER]}>{children}</RoleRoute></ProtectedRoute> }
 
 export default function AppRoutes() {
   return <Routes>
@@ -44,7 +45,7 @@ export default function AppRoutes() {
     {adminPages.map(([path, Component]) => <Route key={path} path={path} element={<Guard role={ROLES.ADMIN}><AdminLayout><Component /></AdminLayout></Guard>} />)}
     {teacherPages.map(([path, type]) => <Route key={path} path={path} element={<Guard role={ROLES.TEACHER}><TeacherLayout><PortalModule type={type} /></TeacherLayout></Guard>} />)}
     {parentPages.map(([path, type]) => <Route key={path} path={path} element={<Guard role={ROLES.PARENT}><ParentShell><PortalModule type={type} /></ParentShell></Guard>} />)}
-    <Route path="/kiosk/scanner" element={<ProtectedRoute><KioskShell><Scanner /></KioskShell></ProtectedRoute>} />
+    <Route path="/kiosk/scanner" element={<KioskGuard><KioskShell><Scanner /></KioskShell></KioskGuard>} />
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes>
 }
