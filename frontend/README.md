@@ -25,15 +25,17 @@ npm run dev
 
 The frontend uses `/api` in development and Vite proxies it to `http://localhost:5000`. Start the backend first; see `../backend/README.md`.
 
-For a different backend URL, create `frontend/.env.local`:
+If you need a custom backend URL, copy `.env.example` to `.env.local` and change it:
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
+Do **not** commit `.env` or `.env.local`; both are ignored by Git.
+
 ## JWT session
 
-Login now calls `POST /api/auth/login`, stores the returned JWT locally, and Axios automatically sends `Authorization: Bearer <token>` on protected requests. The session is validated through `GET /api/auth/me` on reload.
+Login calls `POST /api/auth/login`, stores the returned JWT locally, and Axios automatically sends `Authorization: Bearer <token>` on protected requests. The session is validated through `GET /api/auth/me` on reload.
 
 ## Quality checks
 
